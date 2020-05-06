@@ -6,7 +6,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-
+import com.example.pollutiontrackeronthego.Bitsapi;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +24,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -45,8 +47,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setMyLocationEnabled(true);
            // mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
+           addMarker();
 
-            addMarker();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         }
     }
@@ -58,10 +74,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 14f;
 
-    //vars
+    public static Double mLatitude;
+    public  static Double mLongitude;
+
+    public String API_KEY= "8bh1gngge2l2kq24halhuusbsr";
+    public String BASE_URL ="https://www.airpollutionapi.com/";
+
+    public String API_CALL;
+    public String API;
+
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -168,24 +194,61 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    private void addMarker() {
+    public  void  addMarker() {
+
+
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+
             @Override
             public void onMapClick(LatLng latLng) {
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
 
                 markerOptions.title(latLng.latitude + ": " + latLng.longitude + ": ");
+                mLatitude=latLng.latitude;
+                 mLongitude=latLng.longitude;
+
+
+
+                /*
+                Log.d(TAG,"Current lat" + mLatitude);
+                Log.d(TAG,"Current long" + mLongitude);
+                Log.d(TAG,Bitsapi.API);
+
+                 */
+
+                API_CALL = "1.0/aqi?lat="+MapsActivity.mLatitude+"&lon="+MapsActivity.mLongitude+"&APPID="+API_KEY;
+                API = BASE_URL + API_CALL;
+
+
+                Log.d(TAG,"URL" + API);
+
+
+
                 mMap.clear();
 
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,DEFAULT_ZOOM));
 
                 mMap.addMarker(markerOptions);
+
+
             }
+
+
         });
+
+
+
+
+
+
+
     }
 }
+
+
 
 
 
