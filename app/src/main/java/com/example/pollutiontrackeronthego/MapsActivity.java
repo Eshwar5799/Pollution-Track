@@ -212,7 +212,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            String CURR_TAG="OnMapClickListner";
+
 
             @Override
             public void onMapClick(LatLng latLng) {
