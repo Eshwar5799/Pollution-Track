@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -283,16 +284,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        JSONObject reader = new JSONObject();
+
 
 
                         Log.d(TAG,"Theresponseis: " + response);
 
                         try {
-                            String data = reader.getString("status");
+
+                            String data= response.getString("status");
+
+                            String temp= response.getJSONObject("data").getString("temp");
+                            JSONArray AQI=response.getJSONObject("data").getJSONArray("aqi" +
+                                    "Params");
+                            String aqi = AQI.getJSONObject(3).getString("aqi");
+                            JSONArray AirQuality=response.getJSONObject("data").getJSONArray("aqi" +
+                                    "Params");
+                            String airquality=AirQuality.getJSONObject(0).getString("text");
 
 
-                            Log.d(TAG,"The_data_is"+ data);
+                            Log.d(TAG,"The_data_is "+ data);
+                            Log.d(TAG,"Temp " + temp);
+                            Log.d(TAG,"AQI " + aqi);
+                            Log.d(TAG,"Air Quality" + airquality);
+
+                            // Write these to the Maps
+
+                            markerOptions.title(data);
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -307,6 +326,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
                 queue.add(request);
+
 
                //--------------------------------------------------------------------------------//
 
