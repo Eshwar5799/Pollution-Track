@@ -1,18 +1,26 @@
 package com.example.pollutiontrackeronthego;
 
 import android.Manifest;
+import android.app.DownloadManager;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-import com.example.pollutiontrackeronthego.Bitsapi;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,11 +32,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+  private RequestQueue queue;
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -78,7 +88,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public  static Double mLongitude;
 
     public String API_KEY= "8bh1gngge2l2kq24halhuusbsr";
-    public String BASE_URL ="https://www.airpollutionapi.com/";
+    public String BASE_URL ="http://api.airpollutionapi.com/";
 
     public String API_CALL;
     public String API;
@@ -95,6 +105,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
 
         getLocationPermission();
+
+
+        queue= Volley.newRequestQueue(this);
 
 
     }
@@ -199,14 +212,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-
+            String CURR_TAG="OnMapClickListner";
 
             @Override
             public void onMapClick(LatLng latLng) {
-                MarkerOptions markerOptions = new MarkerOptions();
+                final MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
 
                 markerOptions.title(latLng.latitude + ": " + latLng.longitude + ": ");
+
                 mLatitude=latLng.latitude;
                  mLongitude=latLng.longitude;
 
@@ -223,15 +237,86 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 API = BASE_URL + API_CALL;
 
 
-                Log.d(TAG,"URL" + API);
+                Log.d(TAG,"URL: " + API);
+
+                // API is final URL which will fetch the data
+
+                // Instead of String Request we will be using JSON Request;
+
+               /* StringRequest stringRequest = new StringRequest(
+                        Request.Method.GET, API, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        // Work with JSON
+
+                        try{
+
+                            JSONObject reader = new JSONObject();
+                            String data= reader.getJSONObject("data").getString("country");
+                            markerOptions.snippet(data);
 
 
 
-                mMap.clear();
 
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,DEFAULT_ZOOM));
 
-                mMap.addMarker(markerOptions);
+
+                        }catch (Exception e) {
+                            Toast.makeText(MapsActivity.this, e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MapsActivity.this, "" +
+                                "Unable to fetch Response!!Try again Later", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                ); */
+
+               Log.d(TAG,"Before JSON");
+
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
+                        API, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        JSONObject reader = new JSONObject();
+
+
+                        Log.d(TAG,"Theresponseis: " + response);
+
+                        try {
+                            String data = reader.getString("status");
+
+
+                            Log.d(TAG,"The_data_is"+ data);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
+
+
+
+                queue.add(request);
+
+               //--------------------------------------------------------------------------------//
+
+
+                    Log.d(TAG,"here");
+                    mMap.clear();
+
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,DEFAULT_ZOOM));
+
+                    mMap.addMarker(markerOptions);
 
 
             }
@@ -240,12 +325,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
 
-
-
-
-
-
     }
+
+
+
 }
 
 
