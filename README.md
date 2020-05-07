@@ -6,3 +6,6 @@ A Pollution indicator Android App which tells us about the pollution level in th
 
 ## APK
 https://drive.google.com/file/d/1JtW21WeQhJ5RvORs7GjX50cO_eWJiFek/view?usp=sharing
+Link not working
+- Git clone
+- Get your Google API key and place it in strings.xml
