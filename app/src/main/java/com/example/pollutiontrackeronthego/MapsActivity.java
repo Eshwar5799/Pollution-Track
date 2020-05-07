@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -99,13 +100,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
 
-
+    public TextView mText;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
         getLocationPermission();
+
+        mText=findViewById(R.id.Result);
 
 
         queue= Volley.newRequestQueue(this);
@@ -299,17 +302,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             String aqi = AQI.getJSONObject(3).getString("aqi");
                             JSONArray AirQuality=response.getJSONObject("data").getJSONArray("aqi" +
                                     "Params");
-                            String airquality=AirQuality.getJSONObject(0).getString("text");
+                            String airquality=AirQuality.getJSONObject(3).getString("text");
 
 
                             Log.d(TAG,"The_data_is "+ data);
                             Log.d(TAG,"Temp " + temp);
-                            Log.d(TAG,"AQI " + aqi);
-                            Log.d(TAG,"Air Quality" + airquality);
+                            Log.d(TAG," PM'10 AQI " + aqi);
+                            Log.d(TAG,"Air Quality PM10" + airquality);
 
                             // Write these to the Maps
+                           // mText.setText(data);
+                            mText.setText(temp);
+                           // mText.setText(aqi);
+                            //mText.setText(airquality);
 
-                            markerOptions.title(data);
+
 
 
                         } catch (JSONException e) {
