@@ -13,7 +13,7 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="620dp"
+        android:layout_height="650dp"
         tools:context=".MapsActivity" />
 
     <TextView
@@ -23,7 +23,13 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
 
         android:layout_marginTop="5dp"
-        android:layout_marginBottom="30dp">
+        android:layout_marginBottom="30dp"
+        android:textSize="15dp"
+        android:textColor="@color/TextColor"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:maxLines="4"
+
+        >
 
 
     </TextView>

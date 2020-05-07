@@ -303,18 +303,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             JSONArray AirQuality=response.getJSONObject("data").getJSONArray("aqi" +
                                     "Params");
                             String airquality=AirQuality.getJSONObject(3).getString("text");
-
+                            String windSpeed=AirQuality.getJSONObject(6).getString("value");
 
                             Log.d(TAG,"The_data_is "+ data);
                             Log.d(TAG,"Temp " + temp);
                             Log.d(TAG," PM'10 AQI " + aqi);
                             Log.d(TAG,"Air Quality PM10" + airquality);
+                            Log.d(TAG,"Wind speed" + windSpeed);
 
                             // Write these to the Maps
                            // mText.setText(data);
-                            mText.setText(temp);
-                           // mText.setText(aqi);
-                            //mText.setText(airquality);
+                            mText.setText("The Current Temp: " + temp + "\n");
+                            mText.append("CO present in air: " +aqi + "\n");
+                            mText.append("CO Air Quality: " + airquality + "\n");
+                            mText.append("Wind Speed: " + windSpeed);
 
 
 
